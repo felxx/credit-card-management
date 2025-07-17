@@ -13,9 +13,9 @@ public class CardCreateRequest {
     private String name;
     private CardBrand brand;
     private BigDecimal income;
-    private BigDecimal limit;
+    private BigDecimal cardLimit;
 
     public Card toCard() {
-        return new Card(name, brand, limit, income);
+        return new Card(name, brand, cardLimit, income);
     }
 }

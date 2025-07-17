@@ -7,14 +7,12 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "card")
 public class Card {
     
     @Id
@@ -23,13 +21,13 @@ public class Card {
     private String name;
     @Enumerated(EnumType.STRING)
     private CardBrand brand;
-    private BigDecimal limit;
+    private BigDecimal cardLimit;
     private BigDecimal income;
 
-    public Card(String name, CardBrand brand, BigDecimal limit, BigDecimal income) {
+    public Card(String name, CardBrand brand, BigDecimal cardLimit, BigDecimal income) {
         this.name = name;
         this.brand = brand;
-        this.limit = limit;
+        this.cardLimit = cardLimit;
         this.income = income;
     }
 }

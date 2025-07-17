@@ -22,7 +22,7 @@ public class CardService {
         return cardRepository.save(card);
     }
 
-    public List<Card> findCardIncomeLessThan(Long amount) {
+    public List<Card> findCardIncomeLessThanEqual(Long amount) {
         var incomeBigDecimal = BigDecimal.valueOf(amount);
         return cardRepository.findByIncomeLessThanEqual(incomeBigDecimal).orElseThrow(() -> 
             new RuntimeException("No cards found with income less than " + amount));
