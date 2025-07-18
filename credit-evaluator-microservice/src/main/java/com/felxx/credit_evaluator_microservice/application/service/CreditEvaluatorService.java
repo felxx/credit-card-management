@@ -1,6 +1,7 @@
 package com.felxx.credit_evaluator_microservice.application.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -8,14 +9,18 @@ import org.springframework.stereotype.Service;
 
 import com.felxx.credit_evaluator_microservice.application.exception.MicroserviceCommunicationErrorException;
 import com.felxx.credit_evaluator_microservice.application.exception.NotFoundException;
+import com.felxx.credit_evaluator_microservice.application.exception.RequestCardErrorException;
 import com.felxx.credit_evaluator_microservice.domain.ApprovedCard;
 import com.felxx.credit_evaluator_microservice.domain.Card;
 import com.felxx.credit_evaluator_microservice.domain.ClientCard;
 import com.felxx.credit_evaluator_microservice.domain.ClientData;
 import com.felxx.credit_evaluator_microservice.domain.ClientSituation;
+import com.felxx.credit_evaluator_microservice.domain.RequestCardEmissionData;
+import com.felxx.credit_evaluator_microservice.domain.RequestCardProtocol;
 import com.felxx.credit_evaluator_microservice.domain.ReturnClientEvaluation;
 import com.felxx.credit_evaluator_microservice.infra.client.CardResourceClient;
 import com.felxx.credit_evaluator_microservice.infra.client.ClientResourceClient;
+import com.felxx.credit_evaluator_microservice.infra.mqueue.CardEmissionPublisher;
 
 import feign.FeignException.FeignClientException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +31,7 @@ public class CreditEvaluatorService {
 
     private final ClientResourceClient clientResourceClient;
     private final CardResourceClient cardResourceClient;
+    private final CardEmissionPublisher cardEmissionPublisher;
 
     public ClientSituation findClientSituationByCpf(String cpf) throws NotFoundException, MicroserviceCommunicationErrorException {
         try {
@@ -66,6 +72,17 @@ public class CreditEvaluatorService {
             } else {
                 throw new MicroserviceCommunicationErrorException("Error communicating with microservice");
             }
+        }
+    }
+
+    public RequestCardProtocol requestCardEmission(RequestCardEmissionData data){
+        try{
+            cardEmissionPublisher.requestCardEmission(data);
+            var protocol = UUID.randomUUID().toString();
+            return new RequestCardProtocol(protocol);
+        }
+        catch (Exception e){
+            throw new RequestCardErrorException("Error requesting card emission: " + e.getMessage());
         }
     }
 }

@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.felxx.credit_evaluator_microservice.application.exception.MicroserviceCommunicationErrorException;
 import com.felxx.credit_evaluator_microservice.application.exception.NotFoundException;
+import com.felxx.credit_evaluator_microservice.application.exception.RequestCardErrorException;
 import com.felxx.credit_evaluator_microservice.application.service.CreditEvaluatorService;
 import com.felxx.credit_evaluator_microservice.domain.ClientSituation;
 import com.felxx.credit_evaluator_microservice.domain.EvaluationData;
+import com.felxx.credit_evaluator_microservice.domain.RequestCardEmissionData;
+import com.felxx.credit_evaluator_microservice.domain.RequestCardProtocol;
 import com.felxx.credit_evaluator_microservice.domain.ReturnClientEvaluation;
 
 import lombok.RequiredArgsConstructor;
@@ -52,6 +55,16 @@ public class CreditEvaluatorController {
             return ResponseEntity.notFound().build();
         } catch (MicroserviceCommunicationErrorException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/request-card")
+    public ResponseEntity<RequestCardProtocol> requestCard(@RequestBody RequestCardEmissionData data) {
+        try {
+            RequestCardProtocol protocol = creditEvaluatorService.requestCardEmission(data);
+            return ResponseEntity.ok(protocol);
+        } catch (RequestCardErrorException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new RequestCardProtocol(e.getMessage()));
         }
     }
 }
