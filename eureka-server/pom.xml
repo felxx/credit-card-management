@@ -11,6 +11,10 @@
 	<groupId>com.felxx</groupId>
 	<artifactId>eureka-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>demo</module>
+	</modules>
 	<name>eureka-server</name>
 	<description>An eureka server</description>
 	<url/>
