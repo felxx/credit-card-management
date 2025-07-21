@@ -12,9 +12,11 @@ import com.felxx.card_microservice.infra.repository.CardRepository;
 import com.felxx.card_microservice.infra.repository.ClientCardRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CardEmissionSubscriber {
 
     private final CardRepository cardRepository;
@@ -34,7 +36,7 @@ public class CardEmissionSubscriber {
             clientCardRepository.save(clientCard);
 
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Error processing JSON", e.getMessage());
         }
     }
 }
